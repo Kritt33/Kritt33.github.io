@@ -1,0 +1,78 @@
+```{r}
+library(tidyverse)
+library(baseballr)
+library(waffle)
+library(ggalt)
+library(ggtext)
+
+```
+
+```{r}
+mlb2025total<-bref_daily_batter("2025-03-20","2025-04-28")|>
+  filter(AB>5 & BA <0.6 )
+
+
+mlb2025 <- bref_daily_batter("2025-03-20", "2025-04-28") |>
+  filter(Name %in% c("Dansby Swanson",
+                     "Elly De la Cruz",
+                     "Alec Bohm",
+                     "Francisco Lindor",
+                     "Ryan Jeffers",
+                     "Adley Rutschman"))
+```
+
+
+
+```{r}
+ggplot() +
+  geom_point(data = mlb2025total, aes(x = BA, y = PA), color = "black") +
+  geom_point(data = mlb2025, aes(x = BA, y = PA), color = "red") +
+  scale_x_continuous(limits = c(0, 0.600)) +
+  theme_minimal() +
+  labs(
+    title = "Torpedoes do damage?",
+    subtitle = "The blue dots are the players who use the torpedo bat",
+    caption = "Source: Baseballreference | By Kobe Kritenbrink"
+  )
+```
+
+
+```{r}
+ggplot() +
+  geom_dumbbell(
+    data = mlb2025,
+    aes(y = Name, x = H, xend = SO),
+    size = 2,
+    colour = "grey",
+    colour_x = "green",
+    colour_xend = "red"
+  ) +
+  labs(
+    title = "Hits vs strikeouts of players using torpedo bats",
+    subtitle = "If the green dot (hits) is farther to the right then the left that is good.",
+    y = NULL,
+    caption = "By: Kobe Kritenbrink | Source: BaseballReference"
+  ) 
+```
+
+
+
+
+```{r}
+highvlow<- c("Yankes"= 155, "Pirates"= 102)
+
+```
+
+```{r}
+iron(
+  waffle(
+    parts = highvlow/5,
+    rows = 10,
+    title = "Yankees vs Pirates scoring",
+    xlab = "1 square = 5 Runs",
+    colors = c("black", "yellow")
+  )
+)
+
+```
+
