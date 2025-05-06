@@ -1,0 +1,97 @@
+---
+title: "Do torpedo bats make a difference in the MLB and if so how big of a difference do they make?"
+author: "Kobe Kritenbrink"
+date: '2025-04-01'
+categories: [mlb, baseball, bats]
+image: "image.png"
+format: 
+  html:
+    code-fold: true
+---
+
+Torpedo bats are designed to help baseball players hit better because of their smart design. They’re lighter near the handle and heavier at the end, which makes swinging faster and easier. This helps players react quickly and make solid contact with the ball more often. Since the bat is well-balanced, it’s easier to control and aim for strong hits. That means more base hits and a higher batting average. Many Major League players prefer torpedo bats because they help them hit the ball harder and perform better in games.
+
+So, question 1. Do torpedo bats make a difference when it comes to having a better batting average.
+
+```{r}
+#|eecho: false
+library(tidyverse)
+library(baseballr)
+library(waffle)
+library(ggalt)
+library(ggtext)
+
+```
+
+```{r}
+mlb2025total<-bref_daily_batter("2025-03-20","2025-04-28")|>
+  filter(AB>5 & BA <0.6 )
+
+
+mlb2025 <- bref_daily_batter("2025-03-20", "2025-04-28") |>
+  filter(Name %in% c("Dansby Swanson",
+                     "Elly De la Cruz",
+                     "Alec Bohm",
+                     "Francisco Lindor",
+                     "Ryan Jeffers",
+                     "Adley Rutschman"))
+```
+
+```{r}
+ggplot() +
+  geom_point(data = mlb2025total, aes(x = BA, y = PA), color = "black") +
+  geom_point(data = mlb2025, aes(x = BA, y = PA), color = "blue") +
+  scale_x_continuous(limits = c(0, 0.600)) +
+  theme_minimal() +
+  labs(
+    title = "Torpedoes do damage?",
+    subtitle = "The blue dots are the players who use the torpedo bat",
+    caption = "Source: Baseballreference | By Kobe Kritenbrink"
+  )
+```
+
+As you can see with the blue dots most of the players using the torpedo bat have a batting average in the middle range and so it seems that the bat doesn't make a Jurassic change when it comes to batting average.
+
+According to MLB.com 10% of batter’s strikeout by pitchers who throw over 100 mph this is due to the reaction time and bat speed not being up to par. But with the design of the torpedo bat, it makes it to where players can get the bat around quicker then with a normal bat helping prevent being late on those high velocity fastballs.
+
+So, question 2 Do torpedo bats lead to less strikeouts for batters?
+
+```{r}
+ggplot() +
+  geom_dumbbell(
+    data = mlb2025,
+    aes(y = Name, x = H, xend = SO),
+    size = 2,
+    colour = "grey",
+    colour_x = "green",
+    colour_xend = "red"
+  ) +
+  labs(
+    title = "Hits vs strikeouts of players using torpedo bats",
+    subtitle = "If the green dot (hits) is farther to the right then the left that is good.",
+    y = NULL,
+    caption = "By: Kobe Kritenbrink | Source: BaseballReference"
+  ) 
+```
+
+I finally wanted to look into which teams have the most players who use the torpedo bat compared to a team who has the least number of players. The New York Yankees have the most with 6 players using the bat almost their entire starting lineup. The team with the least is the Pittsburgh Pirates who only have 1 player who uses the bat. It doesn’t take much to see the Yankees are a far better team with a 19-14 record compared to Pirates 12-22 record. But that could be due to many different factors, so I wanted to look into runs scored to see if the torpedo bat leads to more runs.
+
+Final question does the torpedo bat lead to more runs as a team?
+
+```{r}
+highvlow<- c("Yankes"= 155, "Pirates"= 102)
+```
+
+```{r}
+iron(
+  waffle(
+    parts = highvlow/5,
+    rows = 10,
+    title = "Yankees vs Pirates scoring",
+    xlab = "1 square = 5 Runs",
+    colors = c("black", "yellow")
+  )
+)
+```
+
+As you can see the torpedo bat makes a big difference when it comes to scoring run int the MLB. Will the torpedo bats be a thing of the future or will this just be an experiment that fades away after a few years?
